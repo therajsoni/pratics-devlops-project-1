@@ -77,7 +77,7 @@ pipeline {
 
                     def branch = params.BRANCH_NAME?.trim()
                     if (!branch || branch.contains("Error")) {
-                        branch = "main"   // fallback
+                        branch = "master"   // fallback
                     }
 
                     git branch: branch,
