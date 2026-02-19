@@ -1,0 +1,22 @@
+
+context
+
+ build:
+    context: ./frontend
+    args:
+      VITE_BACKEND: http://3.110.70.156:5000
+
+Dockerfile
+
+ARG VITE_BACKEND
+ENV VITE_BACKEND=$VITE_BACKEND
+
+
+use 
+
+
+const backed_url = import.meta.env.VITE_BACKEND;
+
+
+"Use Env instead Arg" for runtime value Give
+

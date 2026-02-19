@@ -1,0 +1,34 @@
+version: "3"
+services:
+   mongo: 
+        container_name: mongo 
+        image: mongo
+        ports:
+           - "27017:27017"
+        volumes:
+           - data:/data/db
+   backend: 
+        container_name: backend
+        build:
+           context: ./backend
+           args:
+            PORT: 5000
+            CONNECTION_DB: mongodb://mongo:27017
+            DB_NAME: todo
+        ports:
+           - "5000:5000"
+        depends_on:
+              - mongo
+   frontend:
+        container_name: frontend
+        build:
+            context: ./frontend
+            args:
+              VITE_BACKEND: http://3.110.70.156:5000
+        ports:
+          - "5001:80"    
+        depends_on: 
+              - mongo
+              - backend      
+volumes:
+   data:

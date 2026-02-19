@@ -1,0 +1,19 @@
+FROM node:20
+
+WORKDIR /app
+
+ARG PORT
+ARG CONNECTION_DB
+ARG DB_NAME
+
+ENV PORT=$PORT
+ENV CONNECTION_DB=$CONNECTION_DB
+ENV DB_NAME=$DB_NAME
+
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+EXPOSE 5000
+CMD ["npm", "start"]
+

@@ -1,0 +1,14 @@
+nginx use as multi docker stages
+
+and 
+
+
+according to dist build folder of frontend app work for index.html page
+
+
+dist folder ke path 
+
+react app for /app/build
+
+vite react app for /app/dist
+

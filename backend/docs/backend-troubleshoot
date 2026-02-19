@@ -1,0 +1,19 @@
+
+backend
+ docker ka backend run nhi hoga jab tak mongo db ka access connect na ho 
+ so solution ya tu 
+  . mongodb run kar lo container 
+  . docker-compose use kar
+
+  first proirity is mongodb for backend
+
+  and frontend for backend
+
+  
+priority table
+
+1. mongodb
+2. backend
+3. frontend
+                           
+

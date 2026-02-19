@@ -1,0 +1,32 @@
+
+
+sabse pahle server.js me agar 5000 port hai ya env se aa rhaa hai ya hardcoded hai tab okay no issue
+
+ye container ke andar 5000 par jaise apne computer par run hota hai vaise hi deamon ke global computer par hamre liye ek mini computer ban jayega and jo image use kiye vo image us mini computer me install hoga " abhi ke case me node install hoga  latest version ka" and server.js ko run kar dega 
+
+
+dockerfile ke 
+EXPOSE 3000 ya 5000 se kyo isuue nhi hai becasuse it is as hint ya kah sakte hai documentation for understanding "hint hai dikhne ke liye
+constant ye hai ye
+no use
+only hint for show
+"
+
+actually me container me port 5000 par backend server jo bhi hai chal raha hai 
+then use apne computer par deamon ke computer ke mini computer se 5000 port ko apne computer ke 5000 port run browser par run karne ke liye 
+port bind karte hai run time me 
+hum chale to kitne bhi images run kar raha sakte hai 
+
+docker run - p host:container-port
+
+.  like docker run -p 5000:5000 host ka apna computer ka port 5000 hai and container jo deamon ke computer hai usme mini computer hai ke 5000 ke sath chalte hai bind karte hai 
+
+
+. like docker run -p 9000:5000 host ka apna computer ka port 9000 hai and container jo deamon ke computer hai usme mini computer hai ke 5000 ke sath chalte hai bind karte hai 
+
+again and again kitne bhi image 5000 container ka use karke run kara sakte hai "browser apne pc ka port unique rhe"
+ 
+
+
+
+
