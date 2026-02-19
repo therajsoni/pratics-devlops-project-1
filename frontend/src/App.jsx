@@ -30,10 +30,17 @@ function App() {
     });
     fetchTodos();
   };
+
+  const triggerJenkins = async() => {
+     await fetch(`${backend_port}//trigger-jenkins`, {
+     method: "POST"
+     });
+  } 	
   console.log(backend_port);
   return (
     <div>
       <h1>Todo App</h1>
+      <button onClick={triggerJenkins}>build trigger</button>  
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addTodo}>Add</button>
 
