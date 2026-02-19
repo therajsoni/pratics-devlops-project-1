@@ -1,93 +1,59 @@
-pipeline {
-    agent any
-
-    parameters {
-
+properties([
+    parameters([
         string(
             name: 'REPO_URL',
             defaultValue: 'https://github.com/therajsoni/pratics-devlops-project-1.git',
-            description: 'Default repo use hoga. Agar dusra repo build karna ho to URL change kare.'
-        )
+            description: 'Default repo URL. Change only if needed.'
+        ),
 
-        activeChoiceReactiveParam('BRANCH_NAME') {
-            description('Select branch from repository')
-            choiceType('SINGLE_SELECT')
-            groovyScript {
-                script("""
-                    def repo = REPO_URL?.trim()
-                    if (!repo) {
-                        return ['main']
-                    }
-
-                    def branches = []
-                    try {
-                        def process = "git ls-remote --heads ${repo}".execute()
-                        process.waitFor()
-
-                        process.in.text.eachLine { line ->
-                            def branch = line.tokenize()[1].replaceAll('refs/heads/', '')
-                            branches << branch
+        [$class: 'CascadeChoiceParameter',
+            name: 'BRANCH_NAME',
+            description: 'Select branch dynamically from GitHub',
+            choiceType: 'PT_SINGLE_SELECT',
+            script: [
+                $class: 'GroovyScript',
+                script: [
+                    script: '''
+                        def repoUrl = REPO_URL
+                        if (!repoUrl) {
+                            return ["No Repo URL Provided"]
                         }
 
-                        if (branches.isEmpty()) {
-                            branches = ['main']
+                        def apiUrl = repoUrl
+                            .replace("https://github.com/", "https://api.github.com/repos/")
+                            .replace(".git", "/branches")
+
+                        def branches = []
+                        try {
+                            def connection = new URL(apiUrl).openConnection()
+                            connection.setRequestMethod("GET")
+                            def response = connection.inputStream.text
+                            def json = new groovy.json.JsonSlurper().parseText(response)
+
+                            json.each { branches.add(it.name) }
+                        } catch(Exception e) {
+                            return ["Error Fetching Branches"]
                         }
 
-                        return branches.sort()
-                    } catch (Exception e) {
-                        return ['main']
-                    }
-                """)
-                fallbackScript("return ['main']")
-            }
-        }
+                        return branches
+                    ''',
+                    sandbox: true
+                ]
+            ]
+        ]
+    ])
+])
 
-        booleanParam(
-            name: 'USE_CREDENTIALS',
-            defaultValue: false,
-            description: 'Private repo ke liye enable kare'
-        )
-    }
-
-    environment {
-        GIT_CREDS = 'github-creds'   // credentials ID (optional use)
-    }
+pipeline {
+    agent any
 
     stages {
-
         stage('Checkout Code') {
             steps {
-                script {
-
-                    def repoToUse = params.REPO_URL?.trim()
-                    def branchToBuild = params.BRANCH_NAME?.trim()
-
-                    if (!branchToBuild) {
-                        branchToBuild = 'main'
-                    }
-
-                    echo "Using Repo: ${repoToUse}"
-                    echo "Using Branch: ${branchToBuild}"
-
-                    if (params.USE_CREDENTIALS) {
-
-                        checkout([
-                            $class: 'GitSCM',
-                            branches: [[name: "*/${branchToBuild}"]],
-                            userRemoteConfigs: [[
-                                url: "${repoToUse}",
-                                credentialsId: "${GIT_CREDS}"
-                            ]]
-                        ])
-
-                    } else {
-
-                        git branch: "${branchToBuild}",
-                            url: "${repoToUse}"
-                    }
-                }
+                git branch: params.BRANCH_NAME,
+                    credentialsId: 'github-creds',
+                    url: params.REPO_URL
             }
         }
     }
 }
-
