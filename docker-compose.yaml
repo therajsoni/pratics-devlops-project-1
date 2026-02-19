@@ -15,6 +15,8 @@ services:
             PORT: 5000
             CONNECTION_DB: mongodb://mongo:27017
             DB_NAME: todo
+            TOKEN_JENKINS: rajaurnikita
+            ENPOINT_JENKINS: http://13.234.45.67:8080/job/project-1/build   
         ports:
            - "5000:5000"
         depends_on:

@@ -39,8 +39,9 @@ function App() {
   console.log(backend_port);
   return (
     <div>
+
+      <button onClick={triggerJenkins}>build trigger</button> 
       <h1>Todo App</h1>
-      <button onClick={triggerJenkins}>build trigger</button>  
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addTodo}>Add</button>
 
