@@ -137,6 +137,26 @@ pipeline {
                 """
             }
         }
+
+        stage('Deploy to Kind Cluster') {
+    steps {
+        sh """
+        # MongoDB
+        kubectl apply -f k8s/secrets.yaml
+        kubectl apply -f k8s/mongodb-deployment.yaml
+
+        # Backend
+        kubectl apply -f k8s/config.yaml
+        kubectl apply -f k8s/backend-deployment.yaml
+        kubectl set image deployment/backend-deployment backend=${ECR_REPO_URI}:${BACKEND_VERSION} --record
+
+        # Frontend
+        kubectl apply -f k8s/frontend-deployment.yaml
+        kubectl set image deployment/frontend-deployment frontend=${DOCKERHUB_REPO}:${FRONTEND_VERSION} --record
+        """
+    }
+}
+
     }
 }
 
