@@ -95,14 +95,7 @@ pipeline {
             }
         }
 
-        stage('Build Backend Docker Image') {
-            steps {
-                sh """
-                docker build -t ${ECR_REPO}:${BACKEND_VERSION} ./backend
-                docker tag ${ECR_REPO}:${BACKEND_VERSION} ${ECR_REPO}:latest
-                """
-            }
-        }
+        
 
        stage('Login to AWS & Set ECR Repo URI') {
             steps {
@@ -124,6 +117,15 @@ pipeline {
                     docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                 """
              }  
+            }
+        }
+
+        stage('Build Backend Docker Image') {
+            steps {
+                sh """
+                docker build -t ${ECR_REPO_URI}:${BACKEND_VERSION} ./backend
+                docker tag ${ECR_REPO_URI}:${BACKEND_VERSION} ${ECR_REPO_URI}:latest
+                """
             }
         }
 
