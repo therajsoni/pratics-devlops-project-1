@@ -130,8 +130,8 @@ pipeline {
         stage('Push Backend to ECR') {
             steps {
                 sh """
-                docker push ${ECR_REPO}:${BACKEND_VERSION}
-                docker push ${ECR_REPO}:latest
+                docker push ${ECR_REPO_URI}:${BACKEND_VERSION}
+                docker push ${ECR_REPO_URI}:latest
                 """
             }
         }
