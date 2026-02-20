@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: 879794963918.dkr.ecr.ap-south-1.amazonaws.com/backend/store-1:1.0.0  # Jenkinsfile se update
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGO_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: mongo-username
+        - name: MONGO_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: mongo-password
+        - name: MONGO_DB
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: mongo-database
+        - name: CONNECTION_DB
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: CONNECTION_DB
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  type: ClusterIP
